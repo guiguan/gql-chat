@@ -29,6 +29,7 @@ export type Mutation = {
   /** Register or login a user. Everyone is welcomed */
   registerUser: User;
   sendMessage: Message;
+  deleteMessage?: Maybe<Message>;
 };
 
 
@@ -40,6 +41,12 @@ export type MutationRegisterUserArgs = {
 export type MutationSendMessageArgs = {
   userId: Scalars['ID'];
   msg: NewMessage;
+};
+
+
+export type MutationDeleteMessageArgs = {
+  userId: Scalars['ID'];
+  msgId: Scalars['ID'];
 };
 
 export type NewMessage = {
@@ -109,6 +116,20 @@ export type SendMessageMutation = (
     { __typename?: 'Message' }
     & Pick<Message, 'id'>
   ) }
+);
+
+export type DeleteMessageMutationVariables = Exact<{
+  userId: Scalars['ID'];
+  msgId: Scalars['ID'];
+}>;
+
+
+export type DeleteMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { message?: Maybe<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'id'>
+  )> }
 );
 
 export type SubscribeMessagesSubscriptionVariables = Exact<{
@@ -196,6 +217,40 @@ export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
 export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
 export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
+export const DeleteMessageDocument = gql`
+    mutation deleteMessage($userId: ID!, $msgId: ID!) {
+  message: deleteMessage(userId: $userId, msgId: $msgId) {
+    id
+  }
+}
+    `;
+export type DeleteMessageMutationFn = Apollo.MutationFunction<DeleteMessageMutation, DeleteMessageMutationVariables>;
+
+/**
+ * __useDeleteMessageMutation__
+ *
+ * To run a mutation, you first call `useDeleteMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMessageMutation, { data, loading, error }] = useDeleteMessageMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      msgId: // value for 'msgId'
+ *   },
+ * });
+ */
+export function useDeleteMessageMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMessageMutation, DeleteMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMessageMutation, DeleteMessageMutationVariables>(DeleteMessageDocument, options);
+      }
+export type DeleteMessageMutationHookResult = ReturnType<typeof useDeleteMessageMutation>;
+export type DeleteMessageMutationResult = Apollo.MutationResult<DeleteMessageMutation>;
+export type DeleteMessageMutationOptions = Apollo.BaseMutationOptions<DeleteMessageMutation, DeleteMessageMutationVariables>;
 export const SubscribeMessagesDocument = gql`
     subscription subscribeMessages($userId: ID!) {
   message: subscribeMessages(userId: $userId) {

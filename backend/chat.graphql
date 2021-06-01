@@ -39,7 +39,7 @@ type Mutation {
   """
   registerUser(user: NewUser!): User!
   sendMessage(userId: ID! @hasRole(role: USER), msg: NewMessage!): Message!
-  # deleteMessage(userId: ID! @hasRole(role: ADMIN), msgId: ID!): Message
+  deleteMessage(userId: ID! @hasRole(role: ADMIN), msgId: ID!): Message
 }
 
 type Subscription {

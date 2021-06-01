@@ -75,7 +75,6 @@ export default function Messages({ email, rows, onDeleteMessage }: {
                                 </Subtitle2>}
                                 action={
                                     <IconButton
-                                        disabled
                                         size='small'
                                         onClick={() => onDeleteMessage(msgId)}
                                     >

@@ -10,11 +10,11 @@ mutation sendMessage($userId: ID!, $msg: NewMessage!) {
   }
 }
 
-# mutation deleteMessage($userId: ID!, $msgId: ID!) {
-#   message: deleteMessage(userId: $userId, msgId: $msgId) {
-#     id
-#   }
-# }
+mutation deleteMessage($userId: ID!, $msgId: ID!) {
+  message: deleteMessage(userId: $userId, msgId: $msgId) {
+    id
+  }
+}
 
 subscription subscribeMessages($userId: ID!) {
   message: subscribeMessages(userId: $userId) {

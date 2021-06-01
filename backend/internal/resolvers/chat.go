@@ -18,6 +18,10 @@ func (r *mutationResolver) SendMessage(ctx context.Context, userID string, msg m
 	return r.chat.SendMessage(ctx, userID, msg)
 }
 
+func (r *mutationResolver) DeleteMessage(ctx context.Context, userID string, msgID string) (*models.Message, error) {
+	return r.chat.DeleteMessage(ctx, userID, msgID)
+}
+
 func (r *queryResolver) GetMessages(ctx context.Context, userID string) ([]*models.Message, error) {
 	return r.chat.GetMessages(ctx, userID)
 }

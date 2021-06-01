@@ -13,7 +13,7 @@ import ErrorAlert from '../error-alert/ErrorAllert';
 import {
   useSubscribeMessagesSubscription,
   useSendMessageMutation,
-  // useDeleteMessageMutation,
+  useDeleteMessageMutation,
   Message,
 } from "../../generated/graphql";
 import "./Chat.css";
@@ -62,25 +62,24 @@ export default function Chat({
     }
   }, [email, msg, sendMessageMutation])
 
-  // const [deleteMessageMutation, { error: deleteMsgError }] = useDeleteMessageMutation();
+  const [deleteMessageMutation, { error: deleteMsgError }] = useDeleteMessageMutation();
 
-  // const deleteMsg = useCallback(async (msgId: string) => {
-  //   try {
-  //     await deleteMessageMutation({
-  //       variables: {
-  //         userId: email,
-  //         msgId,
-  //       }
-  //     })
+  const deleteMsg = useCallback(async (msgId: string) => {
+    try {
+      await deleteMessageMutation({
+        variables: {
+          userId: email,
+          msgId,
+        }
+      })
 
-  //     setRows(rows.filter(v => v.id !== msgId))
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }, [rows, email, deleteMessageMutation])
+      setRows(rows.filter(v => v.id !== msgId))
+    } catch (error) {
+      console.error(error)
+    }
+  }, [rows, email, deleteMessageMutation])
 
-  // const error = subError || sendMsgError || deleteMsgError
-  const error = subError || sendMsgError
+  const error = subError || sendMsgError || deleteMsgError
 
   return (
     <Card
@@ -94,8 +93,7 @@ export default function Chat({
         <Messages
           email={email}
           rows={rows}
-          // onDeleteMessage={deleteMsg}
-          onDeleteMessage={() => { }}
+          onDeleteMessage={deleteMsg}
         />
       </Card>
       <Card flat>

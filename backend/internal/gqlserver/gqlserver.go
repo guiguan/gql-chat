@@ -56,8 +56,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		RegisterUser func(childComplexity int, user models.NewUser) int
-		SendMessage  func(childComplexity int, userID string, msg models.NewMessage) int
+		DeleteMessage func(childComplexity int, userID string, msgID string) int
+		RegisterUser  func(childComplexity int, user models.NewUser) int
+		SendMessage   func(childComplexity int, userID string, msg models.NewMessage) int
 	}
 
 	Query struct {
@@ -77,6 +78,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	RegisterUser(ctx context.Context, user models.NewUser) (*models.User, error)
 	SendMessage(ctx context.Context, userID string, msg models.NewMessage) (*models.Message, error)
+	DeleteMessage(ctx context.Context, userID string, msgID string) (*models.Message, error)
 }
 type QueryResolver interface {
 	GetMessages(ctx context.Context, userID string) ([]*models.Message, error)
@@ -127,6 +129,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Message.User(childComplexity), true
+
+	case "Mutation.deleteMessage":
+		if e.complexity.Mutation.DeleteMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteMessage(childComplexity, args["userId"].(string), args["msgId"].(string)), true
 
 	case "Mutation.registerUser":
 		if e.complexity.Mutation.RegisterUser == nil {
@@ -312,7 +326,7 @@ type Mutation {
   """
   registerUser(user: NewUser!): User!
   sendMessage(userId: ID! @hasRole(role: USER), msg: NewMessage!): Message!
-  # deleteMessage(userId: ID! @hasRole(role: ADMIN), msgId: ID!): Message
+  deleteMessage(userId: ID! @hasRole(role: ADMIN), msgId: ID!): Message
 }
 
 type Subscription {
@@ -338,6 +352,47 @@ func (ec *executionContext) dir_hasRole_args(ctx context.Context, rawArgs map[st
 		}
 	}
 	args["role"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteMessage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		directive0 := func(ctx context.Context) (interface{}, error) { return ec.unmarshalNID2string(ctx, tmp) }
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋguiguanᚋgqlᚑchatᚋinternalᚋmodelsᚐRole(ctx, "ADMIN")
+			if err != nil {
+				return nil, err
+			}
+			if ec.directives.HasRole == nil {
+				return nil, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, rawArgs, directive0, role)
+		}
+
+		tmp, err = directive1(ctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if data, ok := tmp.(string); ok {
+			arg0 = data
+		} else {
+			return nil, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be string`, tmp))
+		}
+	}
+	args["userId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["msgId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("msgId"))
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["msgId"] = arg1
 	return args, nil
 }
 
@@ -736,6 +791,45 @@ func (ec *executionContext) _Mutation_sendMessage(ctx context.Context, field gra
 	res := resTmp.(*models.Message)
 	fc.Result = res
 	return ec.marshalNMessage2ᚖgithubᚗcomᚋguiguanᚋgqlᚑchatᚋinternalᚋmodelsᚐMessage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteMessage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteMessage_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteMessage(rctx, args["userId"].(string), args["msgId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Message)
+	fc.Result = res
+	return ec.marshalOMessage2ᚖgithubᚗcomᚋguiguanᚋgqlᚑchatᚋinternalᚋmodelsᚐMessage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getMessages(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2183,6 +2277,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "deleteMessage":
+			out.Values[i] = ec._Mutation_deleteMessage(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2931,6 +3027,13 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
+}
+
+func (ec *executionContext) marshalOMessage2ᚖgithubᚗcomᚋguiguanᚋgqlᚑchatᚋinternalᚋmodelsᚐMessage(ctx context.Context, sel ast.SelectionSet, v *models.Message) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Message(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
