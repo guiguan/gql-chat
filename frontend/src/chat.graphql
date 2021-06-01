@@ -1,0 +1,29 @@
+mutation registerUser($user: NewUser!) {
+  user: registerUser(user: $user) {
+    id
+  }
+}
+
+mutation sendMessage($userId: ID!, $msg: NewMessage!) {
+  message: sendMessage(userId: $userId, msg: $msg) {
+    id
+  }
+}
+
+# mutation deleteMessage($userId: ID!, $msgId: ID!) {
+#   message: deleteMessage(userId: $userId, msgId: $msgId) {
+#     id
+#   }
+# }
+
+subscription subscribeMessages($userId: ID!) {
+  message: subscribeMessages(userId: $userId) {
+    id
+    user {
+      id
+      name
+    }
+    content
+    timestamp
+  }
+}

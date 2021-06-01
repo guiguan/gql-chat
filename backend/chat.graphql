@@ -1,0 +1,47 @@
+directive @hasRole(role: Role!) on ARGUMENT_DEFINITION
+
+enum Role {
+  ADMIN
+  USER
+  EVERYONE
+}
+
+scalar Time
+
+type User {
+  id: ID!
+  name: String!
+}
+
+input NewUser {
+  email: String!
+  name: String!
+}
+
+type Message {
+  id: ID!
+  user: User!
+  content: String!
+  timestamp: Time!
+}
+
+input NewMessage {
+  content: String!
+}
+
+type Query {
+  getMessages(userId: ID! @hasRole(role: USER)): [Message!]!
+}
+
+type Mutation {
+  """
+  Register or login a user. Everyone is welcomed
+  """
+  registerUser(user: NewUser!): User!
+  sendMessage(userId: ID! @hasRole(role: USER), msg: NewMessage!): Message!
+  # deleteMessage(userId: ID! @hasRole(role: ADMIN), msgId: ID!): Message
+}
+
+type Subscription {
+  subscribeMessages(userId: ID! @hasRole(role: USER)): Message!
+}

@@ -1,0 +1,12 @@
+main {
+  min-height: 100vh;
+  min-width: 100vw;
+  background: var(--light-bg);
+}
+
+.main-container {
+  height: 100vh;
+  --padding: 32px;
+  overflow: hidden;
+  padding: var(--padding);
+}

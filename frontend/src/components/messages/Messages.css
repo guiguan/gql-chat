@@ -1,0 +1,37 @@
+/* .ListItemEven,
+.ListItemOdd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ListItemEven {
+  background-color: #e6e4dc;
+} */
+
+.message-me,
+.message-others {
+  display: flex;
+  align-items: center;
+}
+
+.message-me {
+  justify-content: flex-end;
+}
+
+.message-others {
+  justify-content: flex-start;
+}
+
+.message {
+  max-width: 70%;
+  margin: 15px;
+}
+
+.message .message-header {
+  margin: 0 0 0 16px;
+}
+
+.message .message-content {
+  margin-top: 0;
+}
