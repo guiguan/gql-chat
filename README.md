@@ -1,6 +1,8 @@
 # GraphQL Chat
 
-In this demo, I created a simple chat app with frontend built with React and backend built with Golang. The purpose of this demo is to show how easy and powerful it is for us to generate lots of boilerplate code from a single GraphQL schema and GraphQL operation definition. With this automation level, we can focus more on actual business logic, write less code and finish work early.
+In this demo, I created a simple chat app with frontend built with React and backend built with Golang. The purpose of this demo is to show how easy and powerful it is for us to generate lots of boilerplate code from a GraphQL schema and a GraphQL operation document. With this automation level, we can focus more on actual business logic, write less code and finish work early.
+
+![gql-chat generation flowchart](docs/gql_chat_gen.png)
 
 ## Usage
 
@@ -17,7 +19,6 @@ In this demo, I created a simple chat app with frontend built with React and bac
 
 ## Screenshots
 
-![gql-chat generation flowchart](docs/gql_chat_gen.png)
 ![chat screenshot](docs/screenshot_chat.png)
 ![login screenshot](docs/screenshot_login.png)
 ![gql playground screenshot](docs/screenshot_gql_playground.png)
