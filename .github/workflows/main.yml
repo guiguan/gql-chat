@@ -41,9 +41,13 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           # Build and Publish container images
-          cd backend && docker buildx build --push \
+          pushd backend
+          docker buildx build --push \
           --tag $IMAGE_ID-backend:$VERSION \
-          --platform linux/amd64,linux/arm/v7,linux/arm64 .
-          cd frontend && docker buildx build --push \
+          --platform linux/amd64,linux/arm64 .
+          popd
+          pushd frontend
+          docker buildx build --push \
           --tag $IMAGE_ID-frontend:$VERSION \
-          --platform linux/amd64,linux/arm/v7,linux/arm64 .
+          --platform linux/amd64,linux/arm64 .
+          popd
