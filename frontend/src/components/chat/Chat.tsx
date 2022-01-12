@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Card, TextArea, Button } from "ui-neumorphism";
+import { Card, TextArea, Button, Tooltip } from "ui-neumorphism";
 import "ui-neumorphism/dist/index.css";
 import useSize from "@react-hook/size";
+import useHotkeys from "@reecelucas/react-use-hotkeys";
 import Messages from "../messages/Messages";
 import ErrorAlert from "../error-alert/ErrorAllert";
 import {
@@ -13,6 +14,8 @@ import {
   Message,
 } from "../../generated/graphql";
 import "./Chat.css";
+
+const SEND_SHORTCUT = "Shift+Enter";
 
 export default function Chat({ email }: { email: string }) {
   const textareaParent = useRef(null);
@@ -43,8 +46,13 @@ export default function Chat({ email }: { email: string }) {
   }, [subLoading, data]);
 
   const [msg, setMsg] = useState("");
+  const [uncontrolled, setUncontrolled] = useState(false);
 
   const sendMsg = useCallback(async () => {
+    if (!msg) {
+      return;
+    }
+
     try {
       await sendMessageMutation({
         variables: {
@@ -56,6 +64,11 @@ export default function Chat({ email }: { email: string }) {
       });
 
       setMsg("");
+      // this textarea is buggy and needs to toggle this property in order to sync the value in
+      setUncontrolled(true);
+      setUncontrolled(false);
+      // hack to regain focus
+      document.getElementsByTagName("textarea")[0].focus();
     } catch (error) {
       console.log(error);
     }
@@ -82,6 +95,16 @@ export default function Chat({ email }: { email: string }) {
     [rows, email, deleteMessageMutation]
   );
 
+  const handleSendShortcut = useCallback(
+    (e) => {
+      e.preventDefault();
+      sendMsg();
+    },
+    [sendMsg]
+  );
+
+  useHotkeys(SEND_SHORTCUT, handleSendShortcut);
+
   const error = subError || sendMsgError || deleteMsgError;
 
   return (
@@ -98,12 +121,18 @@ export default function Chat({ email }: { email: string }) {
       <Card flat>
         <div ref={textareaParent}>
           <TextArea
+            autofocus
+            uncontrolled={uncontrolled}
             loading={sendMsgLoading}
             height={80}
             width={width - 110}
             value={msg}
             onChange={({ value }: { value: string }) => setMsg(value)}
-            append={<Button onClick={sendMsg}>Send</Button>}
+            append={
+              <Tooltip content={<div>{SEND_SHORTCUT}</div>}>
+                <Button onClick={sendMsg}>Send</Button>
+              </Tooltip>
+            }
           />
         </div>
       </Card>
