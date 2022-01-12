@@ -1,0 +1,22 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gql-chat-frontend
+  labels:
+    app: gql-chat-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gql-chat-frontend
+  template:
+    metadata:
+      labels:
+        app: gql-chat-frontend
+    spec:
+      containers:
+        - name: gql-chat-frontend
+          image: ghcr.io/guiguan/gql-chat-frontend:latest
+          ports:
+            - name: http
+              containerPort: 8080
