@@ -18,7 +18,7 @@ import "./Chat.css";
 const SEND_SHORTCUT = "Shift+Enter";
 
 export default function Chat({ email }: { email: string }) {
-  const textareaParent = useRef(null);
+  const textareaParent = useRef<HTMLDivElement>(null);
   const [width] = useSize(textareaParent);
 
   const [rows, setRows] = useState<Message[]>([]);
@@ -68,7 +68,7 @@ export default function Chat({ email }: { email: string }) {
       setUncontrolled(true);
       setUncontrolled(false);
       // hack to regain focus
-      document.getElementsByTagName("textarea")[0].focus();
+      textareaParent.current?.getElementsByTagName("textarea")[0].focus();
     } catch (error) {
       console.log(error);
     }
