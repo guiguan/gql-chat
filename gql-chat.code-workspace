@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "frontend"
+		},
+		{
+			"path": "frontend/spa-server"
 		}
 	],
 	"settings": {

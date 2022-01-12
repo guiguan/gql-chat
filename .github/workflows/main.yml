@@ -2,13 +2,13 @@ name: Build and publish multi-arch container images
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Why ?'
+        description: "Why ?"
         required: false
-        default: ''
+        default: ""
 
 jobs:
   ghr_push:
@@ -36,8 +36,8 @@ jobs:
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # when the branch is master, replace master with latest
-          [ "$VERSION" == "master" ] && VERSION=latest
+          # when the branch is main, replace main with latest
+          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           # Build and Publish container images

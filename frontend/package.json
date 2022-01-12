@@ -21,6 +21,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-virtual": "^2.7.1",
+    "serve": "^13.0.2",
     "subscriptions-transport-ws": "^0.9.18",
     "typescript": "^4.3.2",
     "ui-neumorphism": "^1.1.3",
