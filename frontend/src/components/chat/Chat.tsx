@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Card, TextArea, Button, Tooltip } from "ui-neumorphism";
+import { Card, TextArea, Button, Overline } from "ui-neumorphism";
 import "ui-neumorphism/dist/index.css";
 import useSize from "@react-hook/size";
 import useHotkeys from "@reecelucas/react-use-hotkeys";
@@ -129,9 +129,18 @@ export default function Chat({ email }: { email: string }) {
             value={msg}
             onChange={({ value }: { value: string }) => setMsg(value)}
             append={
-              <Tooltip content={<div>{SEND_SHORTCUT}</div>}>
+              <div>
                 <Button onClick={sendMsg}>Send</Button>
-              </Tooltip>
+                <Overline
+                  style={{
+                    fontSize: "8px",
+                    marginTop: "10px",
+                    marginLeft: "-2px",
+                  }}
+                >
+                  {SEND_SHORTCUT}
+                </Overline>
+              </div>
             }
           />
         </div>
